@@ -3,14 +3,17 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import pandas as pd
 
-# Define the objective function with two FM terms
+#  Define the objective function with two FM terms. Add more FM terms as
+# required to get a good fit. (H +- Hc) => try all combination of +- and
+# chose the combination with lowest resnorm and without any discontinuity
 def objective_func(x, H):
     FM1 = (2 * x[2] / np.pi) * np.arctan((H + x[0]) / x[0] * np.tan(np.pi * x[4] / 2))
     FM2 = (2 * x[3] / np.pi) * np.arctan((H + x[1]) / x[1] * np.tan(np.pi * x[5] / 2))
     AFM = x[6] * H
     return FM1 + FM2 + AFM
 
-# Provide the initial guess for the parameters
+# Provide the initial guess for the parameters. Change as per base material
+# to get a good convergence
 initial_guess = [7.1, 6.1, 0.3, 0.4, 0.01, 0.02, 2.3e-5]
 
 # Load the experimental data using pandas
@@ -42,7 +45,7 @@ print('S2:', S2_optimized)
 print('chi:', chi_optimized)
 print('resnorm:', resnorm)
 
-# Separation of the desired fitted model variables using list comprehension
+# Separation of the desired fitted model variables 
 FM1 = [(2 * Ms1_optimized / np.pi) * np.arctan((val + Hc1_optimized) / Hc1_optimized * np.tan(np.pi * S1_optimized / 2)) for val in x]
 FM2 = [(2 * Ms2_optimized / np.pi) * np.arctan((val + Hc2_optimized) / Hc2_optimized * np.tan(np.pi * S2_optimized / 2)) for val in x]
 AFM = chi_optimized * x
